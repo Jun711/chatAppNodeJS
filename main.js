@@ -80,7 +80,7 @@ function setUsername () {
 
 // Prevents input from having injected markup
 function cleanInput (input) {
-return $('<div/>').text(input).text();
+	return $('<div/>').text(input).text();
 }
 
 
