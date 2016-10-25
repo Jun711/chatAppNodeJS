@@ -26,24 +26,30 @@ io.on('connection', function(socket){
 	var addedUser = false;
 	
     socket.on('chat message', function(msg){
-    	console.log('message: ' + msg);
+    	console.log(socket.username + ": " + msg);
+    	console.log("numUsers: " + numUsers);
+    	io.emit('display message', {
+    		username: socket.username,
+    		message: msg
+    	});
 	});
-	socket.on('chat message', function(msg){
-    	io.emit('chat message', msg);
-  	});
 
   	 // when the client emits 'add user', this listens and executes
   	socket.on('add user', function (username) {
   	
-    if (addedUser) return;
+    	if (addedUser) return;
 
 	    // we store the username in the socket session for this client
 	    socket.username = username;
 	    ++numUsers;
-	    console.log('add user: ' + numUsers);
+	    // console.log('add user: ' + numUsers);
 	    
 	    addedUser = true;
-	    socket.broadcast.emit('chat message','user: ' + username + ' connected!')
+	    console.log('add user: ' + addedUser + " " + socket.username + " " + numUsers);
+	    socket.broadcast.emit('display message', {
+    		username: socket.username,
+    		message: 'Here I am!'
+    	});
 	    socket.emit('login', {
 	    	numUsers: numUsers
 	    });
@@ -66,7 +72,10 @@ io.on('connection', function(socket){
 	      });
 
 	      console.log('user ' + socket.username + ' disconnected');
-	      io.emit('chat message','user ' + socket.username + ' disconnected!')
+	      io.emit('display message', {
+    		username: socket.username,
+    		message: 'user: ' + username + ' connected!'
+    	  });
 	    }
 	 });
 });

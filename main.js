@@ -23,7 +23,7 @@ $window.keydown(function (event) {
 	// When the client hits ENTER on their keyboard
 	if (event.which === 13 || event.keycode == 13) {
 	  if (username) {
-	    sendMessage();
+	  //  sendMessage();
 	    socket.emit('stop typing');
 	    typing = false;
 	  } else {
@@ -32,8 +32,19 @@ $window.keydown(function (event) {
 	}
 });
 
+$('form').submit(function(){
+socket.emit('chat message', $('#m').val());
+$('#m').val('');
+return false;
+}); 
 
-
+function sendMessage () {
+	$('form').submit(function(){
+	socket.emit('chat message', $('#m').val());
+	$('#m').val('');
+	return false;
+    }); 
+}
 // $usernameInput.keydown(function (e) {
 // 	console.log('enter');
 //     if (e.keyCode == 13) {
@@ -42,15 +53,20 @@ $window.keydown(function (event) {
 //     }
 // });
 // Whenever the server emits 'login', log the login message
-  socket.on('login', function (data) {
-    connected = true;
-    // Display the welcome message
-    var message = "Welcome to Socket.IO Chat – ";
-    console.log(message, {
-      prepend: true
-    });
-    addParticipantsMessage(data);
-  });
+socket.on('login', function (data) {
+	connected = true;
+	// Display the welcome message
+	var message = "Welcome to Socket.IO Chat – ";
+	console.log(message, {
+	  prepend: true
+	});
+	addParticipantsMessage(data);
+});
+
+socket.on('display message', function(msg){
+	console.log(msg);
+  	$('#messages').append($('<li>').text(msg.username + ": " + msg.message));
+});
 
 function addParticipantsMessage (data) {
     var message = '';
